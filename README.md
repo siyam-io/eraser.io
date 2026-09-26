@@ -1,67 +1,90 @@
-# ✏️ eraser.io
+<div align="center">
+  <br />
+  <h1>✏️ Erasior</h1>
+  <p>
+    <strong>A professional, real-time collaborative workspace bridging the gap between documents and whiteboards.</strong>
+  </p>
+  <p>
+    <a href="https://eraser-io-one.vercel.app/" target="_blank">Live Demo</a> •
+    <a href="#features">Features</a> •
+    <a href="#tech-stack">Tech Stack</a> •
+    <a href="#getting-started">Getting Started</a>
+  </p>
+  <br />
+</div>
 
-A collaborative, modern, and beautiful whiteboard/editor app powered by [Editor.js](https://editorjs.io/), [Excalidraw](https://excalidraw.com/), [Convex](https://convex.dev/), and the power of the modern web stack including **Next.js**, **Tailwind CSS**, and **Kinde Auth**.
+## 📖 Overview
 
-🔗 **Live Demo:** [https://eraser-io-one.vercel.app/](https://eraser-io-one.vercel.app/)
+Erasior is an all-in-one workspace designed for engineering and product teams. It eliminates context switching by combining a powerful block-based document editor with an infinite canvas whiteboard (powered by Excalidraw) in a single, resizable split-screen interface. 
+
+Whether you are writing an RFC, designing system architectures, or brainstorming with your team, Erasior keeps your context in one place.
+
+## ✨ Features
+
+- **Split-Screen Workspace:** Edit documents and draw architecture diagrams side-by-side. Context never leaves your screen.
+- **Block-Based Editor:** Rich text editing using Editor.js with support for Headers, Lists, Code Blocks, Quotes, Tables, and Checklists.
+- **Infinite Canvas:** Sketch flows and diagrams using the integrated Excalidraw whiteboard.
+- **Real-Time Collaboration:** Team spaces where documents and boards live together.
+- **Admin Dashboard:** Manage users, monitor metrics, and handle roles via a secure `/admin` panel.
+- **SaaS Ready:** Metered billing, Stripe integration, and Pro tiers built-in.
+- **Modern Authentication:** Secure credential and Google OAuth sign-in powered by NextAuth.js.
+
+## 🛠 Tech Stack
+
+Built for speed, scalability, and developer experience.
+
+- **Framework:** [Next.js 15](https://nextjs.org/) (App Router & Turbopack)
+- **UI & Styling:** [Tailwind CSS v4](https://tailwindcss.com/) + Radix UI + DaisyUI
+- **Database:** [MongoDB](https://www.mongodb.com/) + Mongoose ODM
+- **Authentication:** [NextAuth.js](https://next-auth.js.org/)
+- **Editor:** [Editor.js](https://editorjs.io/) (JSON-based structured text)
+- **Whiteboard:** [Excalidraw](https://excalidraw.com/)
+- **Payments:** [Stripe](https://stripe.com/)
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js 18+ (Node 24 recommended)
+- MongoDB Database (Local or MongoDB Atlas)
+- Stripe Account (for payments)
+
+### Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/siyam-io/eraser.io.git
+   cd eraser.io
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Set up Environment Variables:**
+   Rename `.env.example` to `.env` and fill in your credentials.
+   ```env
+   MONGODB_URI=mongodb+srv://...
+   NEXTAUTH_SECRET=your_super_secret
+   NEXTAUTH_URL=http://localhost:3000
+   # Stripe & other keys...
+   ```
+
+4. **Run the Development Server:**
+   ```bash
+   npm run dev
+   ```
+   Open `http://localhost:3000` to see the application.
+
+5. **Seed the Admin User:**
+   To access the admin panel, seed an admin user via the terminal:
+   ```bash
+   npm run admin:seed your-email@example.com
+   ```
+
+## 🌐 Deployment (Vercel)
+
+If you are deploying to Vercel, please ensure your **Build Command** in Vercel settings is set to `npm run build` or `next build` to prevent legacy Convex scripts from running.
 
 ---
-
-## 🚀 Features
-
-- ✍️ Block-style text editing with Editor.js (Paragraph, Headers, Quotes, Lists, Tables, Code, Checklist, Image embeds)
-- 🎨 Visual diagramming with Excalidraw
-- 🔐 Authentication with [Kinde Auth](https://kinde.com/)
-- 🌈 Theme support using `next-themes`
-- 🧠 State management and data fetching with `@tanstack/react-query`
-- 📦 Serverless backend powered by [Convex](https://convex.dev/)
-- 💡 Realtime collaboration-ready architecture
-- 🎛️ Smooth UI/UX with Radix UI, Lucide icons, and DaisyUI
-- 🌙 Light & Dark mode toggle
-
----
-
-## 🛠️ Tech Stack
-
-### **Frontend** 
-- ![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white) [Next.js 15](https://nextjs.org/)
-- ![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black) [React 19](https://react.dev/)
-- ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white) [Tailwind CSS 4](https://tailwindcss.com/)
-- ![DaisyUI](https://img.shields.io/badge/DaisyUI-2E2B5F?style=for-the-badge&logo=daisyui&logoColor=white) [DaisyUI](https://daisyui.com/)
-- ![Radix UI](https://img.shields.io/badge/Radix_UI-000000?style=for-the-badge&logo=radix-ui&logoColor=white) [Radix UI](https://www.radix-ui.com/)
-- ![Lucide React](https://img.shields.io/badge/Lucide-Black?style=for-the-badge&logo=lucide&logoColor=white) [Lucide React](https://lucide.dev/)
-
-### **Editor Tools**
-- ![Editor.js](https://img.shields.io/badge/Editor.js-F6F6F6?style=for-the-badge&logo=editorjs&logoColor=000) [Editor.js](https://editorjs.io/) & Plugins:
-  - Paragraph, Header, Quote, Checklist, Code, Embed, Image, List, Table
-  - [editorjs-undo](https://www.npmjs.com/package/editorjs-undo)
-- ![Excalidraw](https://img.shields.io/badge/Excalidraw-FF4444?style=for-the-badge&logo=excalidraw&logoColor=white) [Excalidraw](https://github.com/excalidraw/excalidraw)
-
-### **Backend & State**
-- ![Convex](https://img.shields.io/badge/Convex-FF2A00?style=for-the-badge&logo=convex&logoColor=white) [Convex](https://convex.dev/)
-- ![React Query](https://img.shields.io/badge/TanStack_Query-FF4154?style=for-the-badge&logo=react-query&logoColor=white) [@tanstack/react-query](https://tanstack.com/query/latest)
-
-### **Auth**
-- ![Kinde](https://img.shields.io/badge/Kinde_Auth-1F4690?style=for-the-badge&logo=kinde&logoColor=white) [Kinde Auth](https://kinde.com/)
-
----
-
-## 📦 Scripts
-
-```bash
-# Run development server with Turbopack
-npm run dev
-
-# Build for production
-npm run build
-
-# Start production server
-npm run start
-
-# Lint code
-npm run lint
-
-# Deploy using Convex
-npm run deploy
-
-# Build and deploy together
-npm run build-and-deploy
+*Constructed with pure functional design.*
