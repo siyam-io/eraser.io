@@ -1,17 +1,28 @@
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+import { getToken } from "next-auth/jwt";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-// This function can be marked `async` if using `await` inside
 export async function middleware(request: NextRequest) {
-    const { isAuthenticated } = getKindeServerSession()
-    if (!await isAuthenticated()) {
-        return NextResponse.redirect(new URL('/api/auth/login?post_login_redirect_url=/dashboard', request.url))
-    }
+  // In dev mode, allow all access for easier development
+  if (process.env.NODE_ENV === "development") {
+    return NextResponse.next();
+  }
 
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+
+  if (!token) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  return NextResponse.next();
 }
 
-// See "Matching Paths" below to learn more
+// Protect authenticated app routes
 export const config = {
-    matcher: '/dashboard',
-}
+  matcher: [
+    "/dashboard/:path*",
+    "/workspace/:path*",
+    "/teams/:path*",
+    "/settings/:path*",
+  ],
+};

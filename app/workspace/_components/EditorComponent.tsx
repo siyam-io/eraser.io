@@ -2,8 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import EditorJS from "@editorjs/editorjs";
-
-// Tools
 import Header from "@editorjs/header";
 import List from "@editorjs/list";
 import Paragraph from "@editorjs/paragraph";
@@ -12,43 +10,29 @@ import ImageTool from "@editorjs/image";
 import Table from "@editorjs/table";
 import Quote from "@editorjs/quote";
 
-// History plugin
-import { useConvex, useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import Loader from "@/app/(routes)/dashboard/_components/Loader";
 
-export default function EditorComponent({ filedId, commandToSave, setcommandToSave }: { filedId: any, commandToSave:boolean, setcommandToSave: (value: boolean) => void;}) {
-  // console.log("from editor : ",filedId);
+export default function EditorComponent({ filedId, commandToSave, setcommandToSave }: any) {
   const editorRef = useRef<EditorJS | null>(null);
   const [isEditorReady, setIsEditorReady] = useState(false);
   const [fileData, setFileData] = useState<any>(null);
   const editorHolder = useRef<HTMLDivElement>(null);
-  const convex = useConvex();
-  const updateDocument = useMutation(api.files.updateFile);
   const [loading, setLoading] = useState(false);
-const [now, setnow] = useState<any>()
+  const [now, setnow] = useState<any>();
 
-useEffect(()=>{
-  setnow(Date.now() + (performance.now() % 1))
-},[commandToSave])
-  // console.log(docData)
+  useEffect(() => {
+    setnow(Date.now() + (performance.now() % 1));
+  }, [commandToSave]);
 
   const fetchFile = async () => {
     try {
       setLoading(true);
-      const result = await convex.query(api.files.getFileById, {
-        _id: filedId,
-      });
-
-      if (!result) {
-        throw new Error("File not found");
-      }
-
+      const res = await fetch(`/api/files/${filedId}`);
+      if (!res.ok) throw new Error("File not found");
+      const result = await res.json();
       setFileData(result);
-      // console.log("📄 File data fetched:", result);
     } catch (error) {
-      console.error("❌ Failed to fetch file:", error);
       toast.error("Failed to load file");
     } finally {
       setLoading(false);
@@ -57,12 +41,11 @@ useEffect(()=>{
 
   useEffect(() => {
     fetchFile();
-  }, []);
+  }, [filedId]);
 
   useEffect(() => {
     if (!editorRef.current && editorHolder.current && fileData !== null) {
       let parsedData = { blocks: [] };
-
       try {
         if (fileData.document) {
           const temp = JSON.parse(fileData.document);
@@ -70,35 +53,30 @@ useEffect(()=>{
             parsedData = temp;
           }
         }
-      } catch (error) {
-        console.error("❌ JSON.parse failed:", error);
-      }
+      } catch (error) {}
 
       const editor = new EditorJS({
         holder: editorHolder.current,
-        data: parsedData,
-        placeholder: "Start creating professional content...",
+        data: parsedData as any,
+        placeholder: "Start typing here to create your document...",
         tools: {
-          header: Header,
+          header: {
+            // @ts-expect-error Editor.js tool typings require a config arg that the plugin constructor does not declare
+            class: Header,
+            config: {
+              placeholder: 'Enter a heading',
+              levels: [1, 2, 3, 4],
+              defaultLevel: 2
+            }
+          },
           paragraph: Paragraph,
           list: List,
           code: CodeTool,
-          image: {
-            class: ImageTool,
-            config: {
-              endpoints: {
-                byFile: "/api/upload",
-                byUrl: "/api/fetch-url",
-              },
-            },
-          },
           table: Table,
-
           quote: Quote,
         },
         onReady: () => {
           editorRef.current = editor;
-
           setIsEditorReady(true);
         },
       });
@@ -112,42 +90,33 @@ useEffect(()=>{
 
   const handleSave = async () => {
     if (!filedId || !editorRef.current) return;
-
     try {
       const content = await editorRef.current.save();
-      const document = JSON.stringify(content);
-      await updateDocument({
-        _id: filedId,
-        document: document,
-        edited: now,
+      await fetch(`/api/files/${filedId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ document: JSON.stringify(content), editedAt: new Date() })
       });
-
-      toast.success("✅ File updated successfully!");
-      setcommandToSave(false)
+      toast.success("Document saved successfully");
+      setcommandToSave(false);
     } catch (error) {
-      console.error("❌ Failed to save editor content:", error);
+      console.error("Failed to save:", error);
     }
   };
 
-  useEffect(()=>{
-    commandToSave && handleSave()
-  
-  },[commandToSave])
+  useEffect(() => {
+    if (commandToSave) handleSave();
+  }, [commandToSave]);
 
-
-  if (loading) return <Loader />;
+  if (loading) return <div className="p-8 flex justify-center"><Loader /></div>;
 
   return (
-    <div className="w-full border border-gray-700 rounded p-4 bg-gray-900 text-white space-y-4">
-      <div id="editorjs" className="mr-5" ref={editorHolder} />
-
-      {/* <Button
-        className="cursor-pointer bg-blue-600 px-4 py-2 rounded text-white hover:bg-blue-700 transition"
-        onClick={handleSave}
-        disabled={!isEditorReady}
-      >
-        Save Content
-      </Button> */}
+    <div className="w-full h-full text-zinc-200">
+      <div 
+        id="editorjs" 
+        className="prose prose-invert prose-blue max-w-[800px] mx-auto px-8 md:px-16 py-10 outline-none editor-container" 
+        ref={editorHolder} 
+      />
     </div>
   );
 }

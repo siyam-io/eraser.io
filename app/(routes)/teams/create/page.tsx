@@ -2,9 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Toaster } from "@/components/ui/sonner";
-import { api } from "@/convex/_generated/api";
-import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
-import { useMutation } from "convex/react";
+import { useKindeBrowserClient } from "@/app/hooks/useKindeBrowserClientMock";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "sonner";
@@ -12,23 +10,28 @@ import { toast } from "sonner";
 export default function CreateTeam() {
   const [teamName, setTeamName] = useState("");
 
-  const createTeam = useMutation(api.teams.createTeam);
   const { user } = useKindeBrowserClient();
-    // console.log(user)
   const router = useRouter();
 
-  const handleSubmit = () => {
-    createTeam({
-      teamName: teamName,
-      createdBy: user?.given_name || "",
-      email:user?.email || ""
-    }).then((resp) => {
-      console.log(resp);
-      toast("team create successfully");
-      if (resp) {
+  const handleSubmit = async () => {
+    try {
+      const res = await fetch("/api/teams", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          teamName: teamName,
+          createdBy: user?.email || ""
+        })
+      });
+      if (res.ok) {
+        toast.success("Team created successfully");
         router.push("/dashboard");
+      } else {
+        toast.error("Failed to create team");
       }
-    });
+    } catch (err) {
+      toast.error("An error occurred");
+    }
   };
 
   return (
