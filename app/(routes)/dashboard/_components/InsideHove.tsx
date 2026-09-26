@@ -73,26 +73,35 @@ export default function InsideHove({ selectedTeamId, setSelectedTeamId }: any) {
     }
   };
 
-  if (isLoading) return <div className="p-4"><Loader /></div>;
+  if (isLoading)
+    return (
+      <div className="p-4 text-foreground">
+        <Loader />
+      </div>
+    );
 
   return (
     <div className="flex flex-col text-sm">
-      <div className="p-2 space-y-1 max-h-[220px] overflow-y-auto">
-        <div className="px-2 py-1.5 text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Your Teams</div>
+      <div className="max-h-[220px] space-y-0.5 overflow-y-auto p-2">
+        <div className="px-3 py-1.5 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
+          Your Teams
+        </div>
 
         {teamList?.length === 0 && (
-          <p className="px-3 py-2 text-[13px] text-zinc-500">No teams yet.</p>
+          <p className="px-3 py-2 text-[13px] text-muted-foreground">No teams yet.</p>
         )}
 
         {teamList?.map((team: Team) => (
           <div
             key={team._id}
-            className={`group flex items-center justify-between gap-2 px-3 py-2 rounded-lg transition-colors ${
-              selectedTeamId === team._id ? "bg-blue-600/10 text-blue-400" : "hover:bg-zinc-800 text-zinc-300"
+            className={`group flex items-center justify-between gap-2 px-3 py-2 transition-colors duration-100 ${
+              selectedTeamId === team._id
+                ? "bg-foreground text-background"
+                : "hover:bg-muted"
             }`}
           >
             {editingId === team._id ? (
-              <div className="flex items-center gap-2 w-full">
+              <div className="flex w-full items-center gap-2">
                 <Input
                   autoFocus
                   value={editName}
@@ -101,9 +110,9 @@ export default function InsideHove({ selectedTeamId, setSelectedTeamId }: any) {
                     if (e.key === "Enter") saveEdit();
                     if (e.key === "Escape") setEditingId(null);
                   }}
-                  className="h-7 bg-zinc-900 border-zinc-700 text-white text-[13px]"
+                  className="h-7 text-[13px]"
                 />
-                <Button size="sm" onClick={saveEdit} disabled={busy} className="h-7 px-2 bg-blue-600 hover:bg-blue-700 text-white">
+                <Button size="sm" onClick={saveEdit} disabled={busy} className="h-7 px-2">
                   {busy ? <Loader2 size={12} className="animate-spin" /> : "Save"}
                 </Button>
               </div>
@@ -112,27 +121,27 @@ export default function InsideHove({ selectedTeamId, setSelectedTeamId }: any) {
                 <button
                   type="button"
                   onClick={() => setSelectedTeamId(team._id)}
-                  className="flex items-center gap-2 truncate flex-1 text-left"
+                  className="flex flex-1 truncate items-center gap-2 text-left"
                 >
                   <span className="truncate">{team.teamName}</span>
                   {selectedTeamId === team._id && <Check size={14} className="shrink-0" />}
                 </button>
-                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-center gap-1 opacity-0 transition-opacity duration-100 group-hover:opacity-100">
                   <button
                     type="button"
                     title="Rename team"
                     onClick={() => startEdit(team)}
-                    className="p-1 rounded hover:bg-zinc-700 text-zinc-400 hover:text-white"
+                    className="p-1 hover:bg-background hover:text-foreground"
                   >
-                    <Pencil size={13} />
+                    <Pencil size={13} strokeWidth={1.5} />
                   </button>
                   <button
                     type="button"
                     title="Delete team"
                     onClick={() => setTeamToDelete(team)}
-                    className="p-1 rounded hover:bg-red-600/80 text-zinc-400 hover:text-white"
+                    className="p-1 hover:bg-background hover:text-foreground"
                   >
-                    <Trash2 size={13} />
+                    <Trash2 size={13} strokeWidth={1.5} />
                   </button>
                 </div>
               </>
@@ -141,63 +150,65 @@ export default function InsideHove({ selectedTeamId, setSelectedTeamId }: any) {
         ))}
       </div>
 
-      <Separator className="bg-zinc-800/50" />
+      <Separator />
 
-      <div className="p-2 space-y-1">
+      <div className="space-y-0.5 p-2">
         <div
           onClick={() => router.push("/teams/create")}
-          className="flex items-center gap-3 cursor-pointer px-3 py-2 rounded-lg hover:bg-zinc-800 text-zinc-300 transition-colors"
+          className="flex cursor-pointer items-center gap-3 px-3 py-2 transition-colors duration-100 hover:bg-muted hover:text-foreground"
         >
-          <UserPlus2 size={16} />
-          <span className="font-medium text-[13px]">Join or Create Team</span>
+          <UserPlus2 size={15} strokeWidth={1.5} />
+          <span className="text-[13px] font-medium">Join or Create Team</span>
         </div>
         <div
           onClick={() => router.push("/settings/billing")}
-          className="flex items-center gap-3 cursor-pointer px-3 py-2 rounded-lg hover:bg-zinc-800 text-zinc-300 transition-colors"
+          className="flex cursor-pointer items-center gap-3 px-3 py-2 transition-colors duration-100 hover:bg-muted hover:text-foreground"
         >
-          <Settings size={16} />
-          <span className="font-medium text-[13px]">Billing &amp; Settings</span>
+          <Settings size={15} strokeWidth={1.5} />
+          <span className="text-[13px] font-medium">Billing &amp; Settings</span>
         </div>
       </div>
 
-      <Separator className="bg-zinc-800/50" />
+      <Separator />
 
-      <div className="p-3 bg-zinc-900/50 rounded-b-xl">
-        <div className="flex items-center gap-3 mb-4">
+      <div className="bg-muted p-3">
+        <div className="mb-4 flex items-center gap-3">
           <Image
-            className="rounded-full border border-zinc-700 shadow-sm"
+            className="border-2 border-foreground"
             alt="user logo"
             height={32}
             width={32}
             src={user?.picture || "/fallback.png"}
           />
           <div className="overflow-hidden">
-            <p className="text-sm font-medium text-zinc-100 truncate">{user?.given_name}</p>
-            <p className="text-[11px] text-zinc-500 truncate">{user?.email}</p>
+            <p className="truncate text-sm font-medium">{user?.given_name}</p>
+            <p className="truncate font-mono text-[10px] text-muted-foreground">
+              {user?.email}
+            </p>
           </div>
         </div>
         <div onClick={() => signOut({ callbackUrl: "/" })} className="cursor-pointer">
-          <div className="flex items-center gap-2 text-zinc-400 hover:text-red-400 transition-colors text-[13px] font-medium px-1">
-            <LogOutIcon size={14} />
+          <div className="flex items-center gap-2 px-1 text-[13px] font-medium text-muted-foreground transition-colors duration-100 hover:text-foreground hover:underline">
+            <LogOutIcon size={14} strokeWidth={1.5} />
             <span>Log out</span>
           </div>
         </div>
       </div>
 
       <Dialog open={!!teamToDelete} onOpenChange={(open) => !open && setTeamToDelete(null)}>
-        <DialogContent className="bg-[#121212] border border-zinc-800 text-white sm:max-w-[420px]">
+        <DialogContent className="sm:max-w-[420px]">
           <DialogHeader>
-            <DialogTitle className="text-xl">Delete “{teamToDelete?.teamName}”?</DialogTitle>
-            <DialogDescription className="text-zinc-400">
-              This permanently deletes the team and <strong className="text-red-400">all of its files</strong>.
+            <DialogTitle>Delete “{teamToDelete?.teamName}”?</DialogTitle>
+            <DialogDescription>
+              This permanently deletes the team and <strong className="text-foreground underline decoration-2 underline-offset-2">all of its files</strong>.
               This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <div className="flex justify-end gap-3 pt-2">
-            <Button variant="outline" onClick={() => setTeamToDelete(null)} className="bg-transparent border-zinc-700 text-zinc-300">
+            <Button variant="outline" onClick={() => setTeamToDelete(null)}>
               Cancel
             </Button>
-            <Button onClick={confirmDelete} disabled={busy} className="bg-red-600 hover:bg-red-700 text-white">
+            <Button onClick={confirmDelete} disabled={busy}>
               {busy ? <Loader2 size={14} className="animate-spin" /> : "Delete team"}
             </Button>
           </div>

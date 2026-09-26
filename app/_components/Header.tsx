@@ -1,68 +1,140 @@
-// Custom Auth used via NextAuth
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Link from "next/link";
 
-const Header = () => {
-  return (
-    <header className="bg-white border-b-4 border-[#121212]">
-      <div className="mx-auto flex h-24 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        
-        {/* Geometric Logo */}
-        <Link className="flex items-center gap-2 group" href="/">
-          <div className="flex -space-x-3 mix-blend-multiply">
-            <div className="w-8 h-8 rounded-full bg-[#D02020] border-2 border-[#121212] group-hover:-translate-y-1 transition-transform" />
-            <div className="w-8 h-8 rounded-none bg-[#1040C0] border-2 border-[#121212] group-hover:-translate-y-1 delay-75 transition-transform" />
-            <div className="w-8 h-8 bg-[#F0C020] border-2 border-[#121212] [clip-path:polygon(50%_0%,0%_100%,100%_100%)] group-hover:-translate-y-1 delay-150 transition-transform" />
-          </div>
-          <span className="font-black text-3xl tracking-tighter uppercase text-[#121212] ml-4">
-            ERASIOR
-          </span>
-        </Link>
+const NAV_LINKS = [
+  { name: "About", path: "/about" },
+  { name: "Careers", path: "/careers" },
+  { name: "Changelog", path: "/history" },
+  { name: "Features", path: "/services" },
+  { name: "Templates", path: "/projects" },
+  { name: "Blog", path: "/blog" },
+];
 
-        <div className="flex flex-1 items-center justify-end md:justify-between ml-12">
-          <nav aria-label="Global" className="hidden md:block">
-            <ul className="flex items-center gap-8 text-sm">
-              {[
-                { name: "About", path: "/about" },
-                { name: "Careers", path: "/careers" },
-                { name: "History", path: "/history" },
-                { name: "Services", path: "/services" },
-                { name: "Projects", path: "/projects" },
-                { name: "Blog", path: "/blog" },
-              ].map((link) => (
-                <li key={link.name}>
+const Header = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  return (
+    <>
+      <a href="#main" className="skip-link">
+        Skip to content
+      </a>
+
+      <header className="border-b-4 border-foreground bg-background">
+        <div className="mx-auto flex h-20 w-full max-w-6xl items-center justify-between px-6 md:px-8 lg:px-12">
+          {/* Wordmark: black square, white core — inversion, not color */}
+          <Link
+            className="group flex items-center gap-3"
+            href="/"
+            aria-label="Erasior — home"
+          >
+            <span
+              className="flex size-7 shrink-0 items-center justify-center bg-foreground"
+              aria-hidden="true"
+            >
+              <span className="size-2.5 bg-background transition-colors duration-100 group-hover:bg-foreground" />
+            </span>
+            <span className="font-display text-2xl font-black tracking-tighter uppercase">
+              Erasior
+            </span>
+          </Link>
+
+          <div className="flex items-center gap-8">
+            <nav aria-label="Global" className="hidden lg:block">
+              <ul className="flex items-center gap-7">
+                {NAV_LINKS.map((link) => (
+                  <li key={link.name}>
+                    <Link
+                      className="font-mono text-[11px] tracking-[0.15em] uppercase hover:underline decoration-2 underline-offset-[6px]"
+                      href={link.path}
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            <div className="hidden items-center gap-3 sm:flex">
+              <Link
+                href="/login"
+                className="border-2 border-foreground px-5 py-2.5 font-mono text-[11px] font-medium tracking-widest uppercase transition-colors duration-100 hover:bg-foreground hover:text-background"
+              >
+                Login
+              </Link>
+              <Link
+                href="/register"
+                className="border-2 border-foreground bg-foreground px-5 py-2.5 font-mono text-[11px] font-medium tracking-widest text-background transition-colors duration-100 hover:bg-background hover:text-foreground"
+              >
+                Register
+              </Link>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setMenuOpen((open) => !open)}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-nav"
+              className="border-2 border-foreground p-2 transition-colors duration-100 hover:bg-foreground hover:text-background lg:hidden"
+            >
+              <span className="sr-only">Toggle menu</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="size-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              >
+                <path
+                  strokeLinecap="butt"
+                  strokeLinejoin="miter"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile disclosure — instant, no easing */}
+        {menuOpen && (
+          <nav
+            id="mobile-nav"
+            aria-label="Mobile"
+            className="border-t-2 border-foreground lg:hidden"
+          >
+            <ul className="mx-auto w-full max-w-6xl px-6 py-4">
+              {NAV_LINKS.map((link) => (
+                <li key={link.name} className="border-b border-border-light last:border-b-0">
                   <Link
-                    className="font-bold text-[#121212] uppercase tracking-widest hover:text-[#D02020] transition-colors relative after:content-[''] after:absolute after:-bottom-2 after:left-0 after:w-0 after:h-1 after:bg-[#D02020] hover:after:w-full after:transition-all after:duration-300"
+                    className="block py-3 font-mono text-xs tracking-[0.15em] uppercase hover:underline decoration-2 underline-offset-4"
                     href={link.path}
+                    onClick={() => setMenuOpen(false)}
                   >
                     {link.name}
                   </Link>
                 </li>
               ))}
+              <li className="flex gap-3 pt-4 sm:hidden">
+                <Link
+                  href="/login"
+                  className="flex-1 border-2 border-foreground px-5 py-3 text-center font-mono text-[11px] font-medium tracking-widest uppercase"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/register"
+                  className="flex-1 border-2 border-foreground bg-foreground px-5 py-3 text-center font-mono text-[11px] font-medium tracking-widest text-background"
+                >
+                  Register
+                </Link>
+              </li>
             </ul>
           </nav>
-
-          <div className="flex items-center gap-4">
-            <div className="sm:flex sm:gap-4 hidden">
-              <Link href="/login" className="font-bold uppercase tracking-widest bg-white text-[#121212] border-2 border-[#121212] px-6 py-2 shadow-[4px_4px_0px_0px_#121212] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all duration-200 ease-out inline-block">
-                Login
-              </Link>
-
-              <Link href="/register" className="font-bold uppercase tracking-widest bg-[#D02020] text-white border-2 border-[#121212] px-6 py-2 shadow-[4px_4px_0px_0px_#121212] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all duration-200 ease-out inline-block">
-                Register
-              </Link>
-            </div>
-
-            <button className="block rounded-none border-2 border-[#121212] bg-white p-2 text-[#121212] md:hidden shadow-[4px_4px_0px_0px_#121212] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all duration-200 ease-out">
-              <span className="sr-only">Toggle menu</span>
-              <svg xmlns="http://www.w3.org/2000/svg" className="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="butt" strokeLinejoin="miter" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-    </header>
+        )}
+      </header>
+    </>
   );
 };
 

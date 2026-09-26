@@ -11,16 +11,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <FileListContext.Provider value={{ getFiles, setGetFiles, view, setView }}>
-      <div className="flex h-screen bg-[#0a0a0a] text-zinc-100 overflow-hidden font-sans">
+      <div className="flex h-screen overflow-hidden bg-background font-sans text-foreground">
         {/* Sidebar */}
-        <div className="hidden md:flex md:w-[280px] md:flex-col border-r border-zinc-800/50 bg-[#121212]">
+        <div className="hidden border-r-2 border-foreground bg-background md:flex md:w-[280px] md:flex-col">
           <SideNav />
         </div>
         {/* Main Content */}
-        <div className="flex-1 flex flex-col min-w-0">
-          <main className="flex-1 overflow-auto bg-[#0a0a0a] relative">
+        <div className="flex min-w-0 flex-1 flex-col">
+          <div id="main" className="relative flex-1 overflow-auto bg-background">
             {children}
-          </main>
+          </div>
         </div>
       </div>
     </FileListContext.Provider>

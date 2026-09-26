@@ -1,86 +1,270 @@
 @import "tailwindcss";
-@plugin "daisyui";
+@import "tw-animate-css";
 
+/* ============================================================
+   MINIMALIST MONOCHROME — design tokens
+   Black, white, and typography. Nothing else.
+   ============================================================ */
 
+@theme {
+  /* --- Colors (strictly monochrome) --- */
+  --color-background: #ffffff;
+  --color-foreground: #000000;
+  --color-card: #ffffff;
+  --color-card-foreground: #000000;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #000000;
+  --color-primary: #000000;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #f5f5f5;
+  --color-secondary-foreground: #000000;
+  --color-muted: #f5f5f5;
+  --color-muted-foreground: #525252;
+  --color-accent: #000000;
+  --color-accent-foreground: #ffffff;
+  --color-destructive: #000000;
+  --color-destructive-foreground: #ffffff;
+  --color-border: #000000;
+  --color-border-light: #e5e5e5;
+  --color-input: #000000;
+  --color-ring: #000000;
 
-#editorjs-container {
-  border: 2px solid #ddd;
-  border-radius: 10px;
-  padding: 20px;
-  background-color: #f4f4f4;
+  /* --- Typography (serif as hero) --- */
+  --font-display: var(--font-playfair), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-source-serif), Georgia, "Times New Roman", serif;
+  --font-serif: var(--font-source-serif), Georgia, "Times New Roman", serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  /* --- Radius: 0px everywhere. Sharp corners define the style. --- */
+  --radius-xs: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-4xl: 0px;
 }
-button {
-  margin-top: 20px;
-  padding: 10px;
-  background-color: #0070f3;
-  color: white;
-  border: none;
-  border-radius: 5px;
+
+/* ============================================================
+   Base
+   ============================================================ */
+
+@layer base {
+  *,
+  ::before,
+  ::after,
+  ::backdrop {
+    border-color: var(--color-foreground);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+
+  ::selection {
+    background: var(--color-foreground);
+    color: var(--color-background);
+  }
+
+  ::placeholder {
+    color: var(--color-muted-foreground);
+    font-style: italic;
+    opacity: 1;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-foreground);
+    outline-offset: 3px;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  hr {
+    height: 1px;
+    border: 0;
+    background: var(--color-foreground);
+  }
 }
 
-h1.ce-header{
+/* ============================================================
+   Skip link (visible on focus, instant — no easing)
+   ============================================================ */
+
+.skip-link {
+  position: fixed;
+  top: -100%;
+  left: 1rem;
+  z-index: 100;
+  background: var(--color-foreground);
+  color: var(--color-background);
+  padding: 0.75rem 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* ============================================================
+   Textures — required to prevent flat design.
+   Layered subtly; never decorative noise for its own sake.
+   ============================================================ */
+
+/* Primary: horizontal hairlines (global) */
+.texture-hlines {
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 1px,
+    rgba(0, 0, 0, 0.04) 1px,
+    rgba(0, 0, 0, 0.04) 2px
+  );
+  background-size: 100% 4px;
+}
+
+/* Secondary: editorial grid (product/feature sections) */
+.texture-grid {
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.045) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Diagonal (process/timeline sections) */
+.texture-diagonal {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 40px,
+    rgba(0, 0, 0, 0.05) 40px,
+    rgba(0, 0, 0, 0.05) 42px
+  );
+}
+
+/* Vertical lines for inverted (black) sections */
+.texture-vlines {
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 1px,
+    rgba(255, 255, 255, 0.08) 1px,
+    rgba(255, 255, 255, 0.08) 2px
+  );
+  background-size: 4px 100%;
+}
+
+/* Radial glow for inverted sections (final CTA / hero panels) */
+.texture-glow {
+  background-image: radial-gradient(
+    circle at top center,
+    rgba(255, 255, 255, 0.14),
+    transparent 70%
+  );
+}
+
+/* Paper noise (global, paper-like quality) */
+.texture-noise {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.02;
+}
+
+/* ============================================================
+   FAQ accordion (native <details>, instant — no easing)
+   ============================================================ */
+
+summary {
+  list-style: none;
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-toggle .faq-open {
+  display: none;
+}
+
+.faq-item[open] .faq-open {
+  display: inline;
+}
+
+.faq-item[open] .faq-closed {
+  display: none;
+}
+
+/* ============================================================
+   Sonner toasts — sharp corners, monochrome
+   ============================================================ */
+
+[data-sonner-toast] {
+  border-radius: 0 !important;
+}
+
+/* ============================================================
+   Editor.js (workspace surface — kept functional, sharpened)
+   ============================================================ */
+
+h1.ce-header {
   @apply text-3xl font-bold;
 }
 
-h2.ce-header{
+h2.ce-header {
   @apply text-2xl font-semibold;
 }
 
-h3.ce-header{
+h3.ce-header {
   @apply text-xl font-semibold;
 }
 
-h4.ce-header{
+h4.ce-header {
   @apply text-lg font-semibold;
 }
 
-h5.ce-header{
+h5.ce-header {
   @apply text-base font-semibold;
 }
 
-h6.ce-header{
+h6.ce-header {
   @apply text-base font-semibold;
 }
 
-/* Make the + icon white */
-.ce-toolbar__plus {
-  color: white !important;
-  background-color: transparent !important;
-  border-radius: 4px;
-  transition: all 0.2s ease-in-out;
-}
-
-/* Hover effect: white background, black icon */
-.ce-toolbar__plus:hover {
-  background-color: white !important;
-  color: black !important;
-}
-
-
-/* Style for the "+" icon */
-.ce-toolbar__plus {
-  color: white !important;
-  background-color: transparent !important;
-  border-radius: 4px;
-  transition: all 0.2s ease-in-out;
-}
-
-.ce-toolbar__plus:hover {
-  background-color: white !important;
-  color: black !important;
-}
-
-/* Style for the three-dot settings button */
+/* Toolbar icons: white on the dark editor panel, instant invert on hover */
+.ce-toolbar__plus,
 .ce-toolbar__settings-btn {
   color: white !important;
   background-color: transparent !important;
-  border-radius: 4px;
-  transition: all 0.2s ease-in-out;
+  border-radius: 0;
+  transition: none;
 }
 
+.ce-toolbar__plus:hover,
 .ce-toolbar__settings-btn:hover {
   background-color: white !important;
   color: black !important;
 }
-
-

@@ -1,56 +1,90 @@
-import React from 'react'
-import Link from 'next/link'
+import React from "react";
+import Link from "next/link";
 
+/**
+ * Hero — editorial masthead.
+ * The headline runs full-width (magazine cover scale), then splits into
+ * a text column and an inverted typographic plate.
+ */
 const Hero = () => {
   return (
-    <section className="bg-[#F0F0F0] border-b-4 border-[#121212] overflow-hidden">
-      <div className="mx-auto max-w-7xl lg:grid lg:grid-cols-2 lg:min-h-[calc(100vh-96px)]">
-        {/* Left Content */}
-        <div className="flex flex-col justify-center px-4 py-16 sm:px-6 lg:px-12 lg:py-24 border-b-4 lg:border-b-0 lg:border-r-4 border-[#121212] bg-white">
-          <div className="w-12 h-12 bg-[#F0C020] border-4 border-[#121212] rounded-full mb-8 shadow-[4px_4px_0px_0px_#121212]" />
-          <h1 className="text-6xl sm:text-8xl font-black text-[#121212] uppercase tracking-tighter leading-[0.9] mb-8">
-            Build <br/>
-            The <br/>
-            <span className="text-[#D02020] inline-block -rotate-2 hover:rotate-0 transition-transform duration-300">Future</span>
-          </h1>
-          <p className="text-xl font-medium text-[#121212] max-w-md border-l-4 border-[#1040C0] pl-6 mb-12">
-            A collaborative workspace where pure geometry meets functional design. Organize thoughts, draw systems, and work together.
+    <section className="border-b-4 border-foreground bg-background">
+      {/* Masthead */}
+      <div className="mx-auto w-full max-w-6xl px-6 md:px-8 lg:px-12">
+        {/* Visual punctuation: rule + bordered square + label */}
+        <div className="flex items-center gap-4 pt-16 md:pt-24">
+          <span className="h-1 w-16 bg-foreground" aria-hidden="true" />
+          <span className="size-3 border-2 border-foreground" aria-hidden="true" />
+          <span className="font-mono text-[11px] tracking-[0.2em] text-muted-foreground uppercase">
+            Docs &amp; Whiteboards — one workspace
+          </span>
+        </div>
+
+        <h1 className="mt-10 font-display text-6xl leading-[0.82] font-black tracking-tighter sm:text-7xl md:text-8xl lg:text-9xl">
+          Draw
+          <br />
+          <span className="font-normal italic tracking-tight">&amp;</span> Document
+        </h1>
+
+        {/* Heavy rule terminating in a bordered square */}
+        <div className="mt-10 flex items-center" aria-hidden="true">
+          <span className="h-1 flex-1 bg-foreground" />
+          <span className="size-6 border-2 border-foreground" />
+        </div>
+      </div>
+
+      {/* Split row */}
+      <div className="mx-auto grid w-full max-w-6xl border-t-4 border-foreground lg:grid-cols-2">
+        {/* Left: lead + CTAs */}
+        <div className="border-b-4 border-foreground px-6 py-14 md:px-8 md:py-16 lg:border-b-0 lg:border-r-4 lg:px-12">
+          <p className="max-w-md border-l-2 border-foreground pl-6 text-lg leading-relaxed text-muted-foreground">
+            A collaborative workspace where documents and whiteboards live
+            together. Organize thoughts, design system architectures, and ship
+            faster.
           </p>
-          <div className="flex flex-wrap gap-4">
+
+          <div className="mt-10 flex flex-wrap gap-4">
             <Link
               href="/register"
-              className="font-bold uppercase tracking-widest bg-[#1040C0] text-white border-4 border-[#121212] px-8 py-4 shadow-[8px_8px_0px_0px_#121212] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all duration-200 ease-out"
+              className="group inline-flex items-center gap-3 border-2 border-foreground bg-foreground px-8 py-4 font-mono text-xs font-medium tracking-widest text-background uppercase transition-colors duration-100 hover:bg-background hover:text-foreground"
             >
               Start Creating
+              <span
+                aria-hidden="true"
+                className="transition-transform duration-100 group-hover:translate-x-1"
+              >
+                →
+              </span>
             </Link>
             <Link
               href="/about"
-              className="font-bold uppercase tracking-widest bg-[#F0F0F0] text-[#121212] border-4 border-[#121212] px-8 py-4 shadow-[8px_8px_0px_0px_#121212] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all duration-200 ease-out hover:bg-[#E0E0E0]"
+              className="inline-flex items-center gap-3 border-2 border-foreground px-8 py-4 font-mono text-xs font-medium tracking-widest uppercase transition-colors duration-100 hover:bg-foreground hover:text-background"
             >
-              Discover How
+              View Features
             </Link>
           </div>
         </div>
 
-        {/* Right Composition */}
-        <div className="bg-[#1040C0] relative min-h-[500px] lg:min-h-full flex items-center justify-center overflow-hidden">
-          {/* Bauhaus Abstract Composition */}
-          <div className="relative w-full max-w-md aspect-square z-10">
-            <div className="absolute top-10 left-10 w-48 h-48 rounded-full bg-[#D02020] border-4 border-[#121212] shadow-[8px_8px_0px_0px_#121212] hover:-translate-y-4 transition-transform duration-300 ease-out" />
-            
-            <div className="absolute bottom-10 right-10 w-56 h-56 rounded-none bg-[#F0C020] border-4 border-[#121212] shadow-[8px_8px_0px_0px_#121212] rotate-45 hover:rotate-90 transition-transform duration-500 ease-out origin-center" />
-            
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-[#F0F0F0] border-4 border-[#121212] shadow-[12px_12px_0px_0px_#121212] z-20 flex items-center justify-center">
-              <div className="w-20 h-20 bg-[#121212] [clip-path:polygon(50%_0%,0%_100%,100%_100%)]" />
-            </div>
-          </div>
-          
-          {/* Pattern Overlay */}
-          <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#121212 3px, transparent 3px)', backgroundSize: '32px 32px' }} />
+        {/* Right: inverted typographic plate */}
+        <div className="relative flex min-h-[420px] items-center justify-center overflow-hidden bg-foreground text-background texture-vlines lg:min-h-full">
+          <div className="absolute inset-0 texture-glow" aria-hidden="true" />
+          <span
+            aria-hidden="true"
+            className="relative select-none font-display text-[10rem] leading-none font-normal italic md:text-[13rem]"
+          >
+            &amp;
+          </span>
+          <span
+            className="absolute top-6 left-6 size-8 border-2 border-background"
+            aria-hidden="true"
+          />
+          <span className="absolute right-6 bottom-6 font-mono text-[10px] tracking-[0.3em] text-background/70 uppercase">
+            Draw · Document · Ship
+          </span>
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default Hero
+export default Hero;

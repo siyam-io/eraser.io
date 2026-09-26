@@ -55,7 +55,11 @@ export default function BillingSettingsPage() {
   };
 
   if (isLoading) {
-    return <div className="p-10 flex justify-center"><Loader /></div>;
+    return (
+      <div className="flex min-h-screen justify-center bg-background p-10 text-foreground">
+        <Loader />
+      </div>
+    );
   }
 
   const fileLimit = billing?.fileLimit ?? null;
@@ -63,62 +67,77 @@ export default function BillingSettingsPage() {
   const percent = fileLimit ? Math.min((fileCount / fileLimit) * 100, 100) : 100;
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#0a0a0a] text-zinc-100">
-      <header className="sticky top-0 z-30 flex items-center gap-4 h-16 px-6 border-b border-zinc-800/60 bg-[#0a0a0a]/90 backdrop-blur">
-        <button onClick={() => router.push("/dashboard")} className="text-zinc-400 hover:text-white">
-          <ArrowLeft size={18} />
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
+      <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b-2 border-foreground bg-background px-6">
+        <a href="#main" className="skip-link">
+          Skip to content
+        </a>
+        <button
+          onClick={() => router.push("/dashboard")}
+          aria-label="Back to dashboard"
+          className="flex size-8 items-center justify-center border-2 border-foreground transition-colors duration-100 hover:bg-foreground hover:text-background"
+        >
+          <ArrowLeft size={16} strokeWidth={1.5} />
         </button>
-        <h1 className="text-lg font-semibold">Billing &amp; Plan</h1>
+        <h1 className="font-display text-lg font-bold tracking-tight">
+          Billing &amp; Plan
+        </h1>
       </header>
 
-      <main className="flex-1 p-6 md:p-10 max-w-3xl w-full mx-auto">
-        <div className="rounded-2xl border border-zinc-800 bg-[#121212] p-6 md:p-8">
-          <div className="flex items-center justify-between mb-6">
+      <main id="main" className="mx-auto w-full max-w-3xl flex-1 p-6 md:p-10">
+        <div className="border-2 border-foreground p-6 md:p-8">
+          <div className="mb-6 flex items-center justify-between">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">Current plan</p>
-              <p className="text-2xl font-bold">{billing?.planName ?? "Free"}</p>
+              <p className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
+                Current plan
+              </p>
+              <p className="mt-1 font-display text-3xl font-black tracking-tight">
+                {billing?.planName ?? "Free"}
+              </p>
             </div>
-            <Button variant="ghost" size="sm" onClick={() => sync(true)} className="text-zinc-400 hover:text-white">
+            <Button variant="ghost" size="sm" onClick={() => sync(true)}>
               Refresh
             </Button>
           </div>
 
           {billing?.status && (
-            <p className="text-sm text-zinc-400 mb-6">
-              Subscription status: <span className="text-zinc-200">{billing.status}</span>
+            <p className="mb-6 font-mono text-xs text-muted-foreground">
+              Subscription status:{" "}
+              <span className="text-foreground">{billing.status}</span>
             </p>
           )}
 
           <div className="mb-8">
-            <div className="flex items-center justify-between mb-2 text-sm">
-              <span className="text-zinc-300 font-medium">Files used</span>
-              <span className="text-zinc-500">{fileCount} / {fileLimit ?? "∞"}</span>
+            <div className="mb-2 flex items-center justify-between text-sm">
+              <span className="font-medium">Files used</span>
+              <span className="font-mono text-xs text-muted-foreground">
+                {fileCount} / {fileLimit ?? "∞"}
+              </span>
             </div>
-            <Progress value={percent} className="h-2 bg-zinc-800 [&>div]:bg-blue-500" />
+            <Progress value={percent} className="h-2 bg-border-light" />
           </div>
 
           <div className="flex flex-wrap gap-3">
             {billing?.plan === "pro" ? (
-              <Button onClick={openPortal} disabled={loading} className="bg-blue-600 hover:bg-blue-700 text-white">
-                {loading ? <Loader2 size={16} className="animate-spin" /> : "Manage subscription"}
+              <Button onClick={openPortal} disabled={loading}>
+                {loading ? (
+                  <Loader2 size={16} className="animate-spin" />
+                ) : (
+                  "Manage subscription"
+                )}
               </Button>
             ) : (
-              <Button onClick={() => router.push("/pricing")} className="bg-blue-600 hover:bg-blue-700 text-white">
-                Upgrade to Pro
-              </Button>
+              <Button onClick={() => router.push("/pricing")}>Upgrade to Pro</Button>
             )}
-            <Button
-              variant="outline"
-              onClick={() => router.push("/dashboard")}
-              className="bg-transparent border-zinc-700 text-zinc-200"
-            >
+            <Button variant="outline" onClick={() => router.push("/dashboard")}>
               Back to dashboard
             </Button>
           </div>
         </div>
 
-        <p className="text-xs text-zinc-500 mt-6">
-          Billing is powered by Stripe. Subscriptions are managed through the Stripe customer portal.
+        <p className="mt-6 border-t border-border-light pt-4 font-mono text-[11px] leading-relaxed text-muted-foreground">
+          Billing is powered by Stripe. Subscriptions are managed through the
+          Stripe customer portal.
         </p>
       </main>
     </div>

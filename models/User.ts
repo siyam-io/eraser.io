@@ -8,6 +8,10 @@ const UserSchema = new Schema(
     image: { type: String },
     teams: [{ type: Schema.Types.ObjectId, ref: "Team" }],
 
+    // Access control
+    role: { type: String, enum: ["user", "admin"], default: "user", index: true },
+    banned: { type: Boolean, default: false, index: true },
+
     // Billing
     plan: { type: String, enum: ["free", "pro"], default: "free" },
     stripeCustomerId: { type: String, index: true },

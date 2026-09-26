@@ -55,23 +55,32 @@ export default function FileTable({ getFiles, data }: any) {
 
   if (!getFiles) {
     return (
-      <div className="flex flex-col items-center justify-center h-[50vh] text-zinc-500">
-        <div className="w-16 h-16 mb-4 rounded-full bg-zinc-900 flex items-center justify-center border border-zinc-800/50">
-          <FileText size={24} className="text-zinc-600" />
-        </div>
-        <p className="font-medium text-lg text-zinc-300">No team selected</p>
+      <div className="flex h-[50vh] flex-col items-center justify-center border-2 border-border-light p-8 text-center">
+        <span className="mb-5 flex size-14 items-center justify-center border-2 border-foreground">
+          <FileText size={22} strokeWidth={1.5} />
+        </span>
+        <p className="font-display text-2xl font-bold tracking-tight">
+          No team selected
+        </p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Choose or create a team from the sidebar.
+        </p>
       </div>
     );
   }
 
   if (data.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-[50vh] text-zinc-500">
-        <div className="w-20 h-20 mb-5 rounded-full bg-zinc-900/50 flex items-center justify-center border border-zinc-800/50 shadow-inner">
-          <FileText size={32} className="text-zinc-600" />
-        </div>
-        <p className="font-semibold text-xl text-zinc-300">No files found</p>
-        <p className="text-[15px] mt-2 text-zinc-500">Create a new file from the sidebar to get started.</p>
+      <div className="flex h-[50vh] flex-col items-center justify-center border-2 border-border-light p-8 text-center">
+        <span className="mb-5 flex size-14 items-center justify-center border-2 border-foreground">
+          <FileText size={22} strokeWidth={1.5} />
+        </span>
+        <p className="font-display text-2xl font-bold tracking-tight">
+          No files found
+        </p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Create a new file from the sidebar to get started.
+        </p>
       </div>
     );
   }
@@ -90,30 +99,30 @@ export default function FileTable({ getFiles, data }: any) {
 
   return (
     <div className="w-full">
-      <div className="rounded-xl border border-zinc-800/60 bg-[#121212] overflow-hidden shadow-2xl">
-        <table className="w-full text-sm text-left">
-          <thead className="text-[11px] font-bold text-zinc-500 bg-zinc-900/40 uppercase tracking-wider border-b border-zinc-800/60">
+      <div className="w-full overflow-hidden border-2 border-foreground">
+        <table className="w-full text-left text-sm">
+          <thead className="bg-foreground font-mono text-[10px] tracking-[0.15em] text-background uppercase">
             <tr>
-              <th className="px-6 py-4">Name</th>
-              <th className="px-6 py-4 hidden md:table-cell">Created</th>
-              <th className="px-6 py-4 hidden lg:table-cell">Last Edited</th>
-              <th className="px-6 py-4">Author</th>
-              <th className="px-6 py-4 text-right">Actions</th>
+              <th className="px-6 py-4 font-medium">Name</th>
+              <th className="hidden px-6 py-4 font-medium md:table-cell">Created</th>
+              <th className="hidden px-6 py-4 font-medium lg:table-cell">Last Edited</th>
+              <th className="px-6 py-4 font-medium">Author</th>
+              <th className="px-6 py-4 text-right font-medium">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-800/40">
+          <tbody className="divide-y divide-border-light">
             {data.map((file: File) => (
               <tr
                 key={file._id}
                 onClick={() => router.push("workspace/" + file._id)}
-                className="group hover:bg-zinc-800/40 transition-all cursor-pointer"
+                className="group cursor-pointer transition-colors duration-100 hover:bg-foreground hover:text-background"
               >
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center border border-blue-500/20 shadow-sm">
-                      <FileText size={18} />
-                    </div>
-                    <span className="font-semibold text-[15px] text-zinc-200 group-hover:text-blue-400 transition-colors">
+                    <span className="flex size-9 shrink-0 items-center justify-center border-2 border-foreground transition-colors duration-100 group-hover:border-background">
+                      <FileText size={16} strokeWidth={1.5} />
+                    </span>
+                    <span className="truncate font-medium">
                       {file.fileName}
                     </span>
                     <button
@@ -126,21 +135,23 @@ export default function FileTable({ getFiles, data }: any) {
                           file.starred ? "Removed star" : "Starred"
                         );
                       }}
-                      className={`ml-1 p-1 rounded transition-opacity ${
-                        file.starred ? "opacity-100 text-yellow-400" : "opacity-0 group-hover:opacity-100 text-zinc-500 hover:text-yellow-400"
+                      className={`ml-1 transition-opacity duration-100 ${
+                        file.starred
+                          ? "opacity-100"
+                          : "opacity-0 group-hover:opacity-100"
                       }`}
                     >
-                      <Star size={15} fill={file.starred ? "currentColor" : "none"} />
+                      <Star size={14} strokeWidth={1.5} fill={file.starred ? "currentColor" : "none"} />
                     </button>
                   </div>
                 </td>
-                <td className="px-6 py-4 text-zinc-500 hidden md:table-cell font-medium">
-                  <div className="flex items-center gap-2">
-                    <Clock size={14} className="text-zinc-600" />
+                <td className="hidden px-6 py-4 text-muted-foreground group-hover:text-background/70 md:table-cell">
+                  <div className="flex items-center gap-2 font-mono text-xs">
+                    <Clock size={13} strokeWidth={1.5} />
                     {moment(file.createdAt).format("MMM D, YYYY")}
                   </div>
                 </td>
-                <td className="px-6 py-4 text-zinc-500 hidden lg:table-cell font-medium">
+                <td className="hidden px-6 py-4 font-mono text-xs text-muted-foreground group-hover:text-background/70 lg:table-cell">
                   {file.editedAt ? moment(file.editedAt).fromNow() : "Never"}
                 </td>
                 <td className="px-6 py-4">
@@ -148,35 +159,40 @@ export default function FileTable({ getFiles, data }: any) {
                     <Image
                       height={28}
                       width={28}
-                      className="rounded-full border-2 border-zinc-700 shadow-sm"
+                      className="border-2 border-foreground transition-colors duration-100 group-hover:border-background"
                       src={user?.picture || "/fallback.png"}
                       alt="avatar"
                     />
-                    <span className="text-zinc-400 font-medium text-xs hidden sm:inline-block">You</span>
+                    <span className="hidden font-mono text-xs text-muted-foreground group-hover:text-background/70 sm:inline-block">
+                      You
+                    </span>
                   </div>
                 </td>
                 <td className="px-6 py-4 text-right" onClick={(e) => e.stopPropagation()}>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <button className="p-2 hover:bg-zinc-700 rounded-md text-zinc-400 hover:text-white transition-colors focus:outline-none opacity-0 group-hover:opacity-100">
+                      <button
+                        aria-label={`Actions for ${file.fileName}`}
+                        className="p-2 text-muted-foreground opacity-0 transition-all duration-100 group-hover:opacity-100 hover:!bg-background hover:!text-foreground focus:opacity-100"
+                      >
                         <MoreHorizontal size={18} />
                       </button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-52 bg-[#1A1A1A] border-zinc-800 shadow-2xl rounded-xl p-1.5">
+                    <DropdownMenuContent align="end" className="w-52">
                       <DropdownMenuItem
                         onClick={() => router.push("workspace/" + file._id)}
-                        className="text-zinc-300 hover:text-white hover:bg-blue-600 focus:bg-blue-600 focus:text-white cursor-pointer rounded-lg px-3 py-2 text-sm font-medium flex items-center gap-2 transition-colors"
+                        className="cursor-pointer text-sm font-medium"
                       >
-                        <FileText size={16} /> Open File
+                        <FileText size={15} strokeWidth={1.5} /> Open File
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => {
                           setFileToRename(file);
                           setRenameValue(file.fileName);
                         }}
-                        className="text-zinc-300 hover:text-white hover:bg-blue-600 focus:bg-blue-600 focus:text-white cursor-pointer rounded-lg px-3 py-2 text-sm font-medium flex items-center gap-2 transition-colors"
+                        className="cursor-pointer text-sm font-medium"
                       >
-                        <Pencil size={16} /> Rename
+                        <Pencil size={15} strokeWidth={1.5} /> Rename
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() =>
@@ -185,9 +201,9 @@ export default function FileTable({ getFiles, data }: any) {
                             file.starred ? "Removed star" : "Starred"
                           )
                         }
-                        className="text-zinc-300 hover:text-white hover:bg-yellow-600 focus:bg-yellow-600 focus:text-white cursor-pointer rounded-lg px-3 py-2 text-sm font-medium flex items-center gap-2 transition-colors"
+                        className="cursor-pointer text-sm font-medium"
                       >
-                        <Star size={16} fill={file.starred ? "currentColor" : "none"} />{" "}
+                        <Star size={15} strokeWidth={1.5} fill={file.starred ? "currentColor" : "none"} />{" "}
                         {file.starred ? "Remove star" : "Add star"}
                       </DropdownMenuItem>
                       <DropdownMenuItem
@@ -197,17 +213,21 @@ export default function FileTable({ getFiles, data }: any) {
                             file.archive ? "Restored from archive" : "Archived"
                           )
                         }
-                        className="text-zinc-300 hover:text-white hover:bg-blue-600 focus:bg-blue-600 focus:text-white cursor-pointer rounded-lg px-3 py-2 text-sm font-medium flex items-center gap-2 transition-colors"
+                        className="cursor-pointer text-sm font-medium"
                       >
-                        {file.archive ? <ArchiveRestore size={16} /> : <Archive size={16} />}
+                        {file.archive ? (
+                          <ArchiveRestore size={15} strokeWidth={1.5} />
+                        ) : (
+                          <Archive size={15} strokeWidth={1.5} />
+                        )}
                         {file.archive ? "Unarchive" : "Archive"}
                       </DropdownMenuItem>
-                      <div className="h-px bg-zinc-800 my-1.5 mx-2" />
+                      <div className="mx-2 my-1.5 h-px bg-foreground" />
                       <DropdownMenuItem
                         onClick={() => setFileToDelete(file)}
-                        className="text-red-400 hover:text-white hover:bg-red-600 focus:bg-red-600 focus:text-white cursor-pointer rounded-lg px-3 py-2 text-sm font-medium flex items-center gap-2 transition-colors"
+                        className="cursor-pointer text-sm font-semibold"
                       >
-                        <Trash2 size={16} /> Delete
+                        <Trash2 size={15} strokeWidth={1.5} /> Delete
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -220,10 +240,10 @@ export default function FileTable({ getFiles, data }: any) {
 
       {/* Rename dialog */}
       <Dialog open={!!fileToRename} onOpenChange={(open) => !open && setFileToRename(null)}>
-        <DialogContent className="bg-[#121212] border border-zinc-800 text-white sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle className="text-xl">Rename file</DialogTitle>
-            <DialogDescription className="text-zinc-400">
+            <DialogTitle>Rename file</DialogTitle>
+            <DialogDescription>
               Give this file a new name.
             </DialogDescription>
           </DialogHeader>
@@ -238,7 +258,6 @@ export default function FileTable({ getFiles, data }: any) {
                   setFileToRename(null);
                 }
               }}
-              className="bg-zinc-900 border-zinc-700 focus-visible:ring-blue-500 text-white"
             />
           </div>
           <Button
@@ -248,7 +267,7 @@ export default function FileTable({ getFiles, data }: any) {
               runAction(() => rename(fileToRename._id, renameValue.trim()), "File renamed");
               setFileToRename(null);
             }}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+            className="w-full"
           >
             {busy ? <Loader2 size={14} className="animate-spin" /> : "Save name"}
           </Button>
@@ -257,19 +276,15 @@ export default function FileTable({ getFiles, data }: any) {
 
       {/* Delete confirmation */}
       <Dialog open={!!fileToDelete} onOpenChange={(open) => !open && setFileToDelete(null)}>
-        <DialogContent className="bg-[#121212] border border-zinc-800 text-white sm:max-w-[420px]">
+        <DialogContent className="sm:max-w-[420px]">
           <DialogHeader>
-            <DialogTitle className="text-xl">Delete “{fileToDelete?.fileName}”?</DialogTitle>
-            <DialogDescription className="text-zinc-400">
+            <DialogTitle>Delete “{fileToDelete?.fileName}”?</DialogTitle>
+            <DialogDescription>
               This permanently deletes the file and its content. This cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <div className="flex justify-end gap-3 pt-2">
-            <Button
-              variant="outline"
-              onClick={() => setFileToDelete(null)}
-              className="bg-transparent border-zinc-700 text-zinc-300"
-            >
+            <Button variant="outline" onClick={() => setFileToDelete(null)}>
               Cancel
             </Button>
             <Button
@@ -279,7 +294,6 @@ export default function FileTable({ getFiles, data }: any) {
                 runAction(() => remove(fileToDelete._id), "File deleted");
                 setFileToDelete(null);
               }}
-              className="bg-red-600 hover:bg-red-700 text-white"
             >
               {busy ? <Loader2 size={14} className="animate-spin" /> : "Delete file"}
             </Button>

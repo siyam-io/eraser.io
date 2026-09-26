@@ -21,24 +21,34 @@ export default function Dashboard() {
   const { data = [], isLoading } = useTeamFiles(getFiles, view);
 
   return (
-    <div className="flex flex-col min-h-screen relative">
-      {/* Background gradients for ultra-premium feel */}
-      <div className="absolute top-0 inset-x-0 h-[400px] bg-gradient-to-b from-blue-900/15 via-blue-900/5 to-transparent pointer-events-none" />
-
+    <div className="relative flex min-h-screen flex-col">
       <DashboardHeader />
 
-      <main className="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full relative z-10">
+      <main className="relative z-10 mx-auto w-full max-w-7xl flex-1 p-6 md:p-10">
         <div className="mb-10 mt-4">
-          <h2 className="text-3xl font-bold tracking-tight text-white mb-2">
-            Welcome back{user?.given_name ? `, ${user.given_name}` : ""}
+          <div className="flex items-center gap-4">
+            <span className="h-1 w-10 bg-foreground" aria-hidden="true" />
+            <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
+              {VIEW_TITLES[view] ?? "Files"}
+            </span>
+          </div>
+          <h2 className="mt-5 font-display text-4xl leading-tight font-black tracking-tighter md:text-5xl">
+            Welcome back
+            {user?.given_name ? (
+              <>
+                , <span className="font-normal italic">{user.given_name}</span>
+              </>
+            ) : null}
           </h2>
-          <p className="text-zinc-400 text-lg">
-            {VIEW_TITLES[view] ?? "Files"} · manage your system designs and whiteboards.
+          <p className="mt-3 text-muted-foreground">
+            Manage your system designs and whiteboards.
           </p>
         </div>
 
         {isLoading ? (
-          <div className="mt-12 flex justify-center"><Loader /></div>
+          <div className="mt-12 flex justify-center text-foreground">
+            <Loader />
+          </div>
         ) : (
           <FileTable getFiles={getFiles} data={data} />
         )}

@@ -1,7 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Toaster } from "@/components/ui/sonner";
 import { useKindeBrowserClient } from "@/app/hooks/useKindeBrowserClientMock";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -35,37 +34,48 @@ export default function CreateTeam() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6 space-y-6">
-        <div className="text-center space-y-2">
-          <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">
-            What should we call your team?
-          </h2>
-          <p className="text-sm text-gray-500">
+    <main
+      id="main"
+      className="flex min-h-screen items-center justify-center bg-background texture-grid p-6"
+    >
+      <div className="w-full max-w-md border-2 border-foreground bg-background p-8 space-y-8">
+        <div className="space-y-3">
+          <div className="flex items-center gap-4">
+            <span className="h-1 w-12 bg-foreground" aria-hidden="true" />
+            <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
+              New team
+            </span>
+          </div>
+          <h1 className="font-display text-3xl leading-tight font-black tracking-tighter">
+            What should we call <span className="font-normal italic">your team</span>?
+          </h1>
+          <p className="text-sm text-muted-foreground">
             You can change this later from settings.
           </p>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           <label
             htmlFor="teamName"
-            className="block text-sm font-medium text-gray-700"
+            className="block font-mono text-[11px] tracking-[0.15em] text-muted-foreground uppercase"
           >
             Team Name
           </label>
           <Input
             id="teamName"
-            
             value={teamName}
             onChange={(e) => setTeamName(e.target.value)}
             placeholder="Enter your team name"
-            className="w-full text-black"
           />
-          <Button disabled={!(teamName && teamName?.length>0)} className="w-full bg-blue-700" onClick={handleSubmit}>
+          <Button
+            disabled={!(teamName && teamName?.length > 0)}
+            className="w-full"
+            onClick={handleSubmit}
+          >
             Submit
           </Button>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

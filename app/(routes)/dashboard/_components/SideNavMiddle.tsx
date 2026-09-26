@@ -9,16 +9,18 @@ export default function SideNavMiddle() {
   const { view, setView } = useContext(FileListContext);
 
   const items: { icon: React.ReactNode; label: string; value: FileView }[] = [
-    { icon: <Blocks size={18} />, label: "All Files", value: "all" },
-    { icon: <Clock size={18} />, label: "Recent", value: "recent" },
-    { icon: <Star size={18} />, label: "Starred", value: "starred" },
-    { icon: <Archive size={18} />, label: "Archived", value: "archived" },
+    { icon: <Blocks size={16} strokeWidth={1.5} />, label: "All Files", value: "all" },
+    { icon: <Clock size={16} strokeWidth={1.5} />, label: "Recent", value: "recent" },
+    { icon: <Star size={16} strokeWidth={1.5} />, label: "Starred", value: "starred" },
+    { icon: <Archive size={16} strokeWidth={1.5} />, label: "Archived", value: "archived" },
   ];
 
   return (
     <div className="flex flex-col space-y-8">
-      <div className="space-y-1.5">
-        <div className="px-3 mb-3 text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Workspace</div>
+      <div className="space-y-1">
+        <div className="mb-3 px-2 font-mono text-[10px] tracking-[0.2em] text-muted-foreground uppercase">
+          Workspace
+        </div>
         {items.map((item) => {
           const active = view === item.value;
           return (
@@ -26,14 +28,15 @@ export default function SideNavMiddle() {
               key={item.value}
               type="button"
               onClick={() => setView(item.value)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all text-left ${
+              aria-current={active ? "page" : undefined}
+              className={`flex w-full cursor-pointer items-center gap-3 px-3 py-2.5 text-left text-[15px] transition-colors duration-100 ${
                 active
-                  ? "bg-zinc-800/80 text-white shadow-sm border border-zinc-700/50"
-                  : "text-zinc-400 hover:bg-zinc-800/40 hover:text-zinc-200"
+                  ? "bg-foreground font-medium text-background"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
               }`}
             >
-              <span className={active ? "text-blue-400" : ""}>{item.icon}</span>
-              <span className="font-medium text-[15px]">{item.label}</span>
+              {item.icon}
+              <span>{item.label}</span>
             </button>
           );
         })}

@@ -58,9 +58,9 @@ export default function SideNavBottom() {
   };
 
   const menu = [
-    { name: "Templates", icon: <Layers3 size={16} />, onClick: undefined as (() => void) | undefined },
-    { name: "GitHub Sync", icon: <Github size={16} />, onClick: undefined as (() => void) | undefined },
-    { name: "Archived files", icon: <Archive size={16} />, onClick: () => setView("archived") },
+    { name: "Templates", icon: <Layers3 size={15} strokeWidth={1.5} />, onClick: undefined as (() => void) | undefined },
+    { name: "GitHub Sync", icon: <Github size={15} strokeWidth={1.5} />, onClick: undefined as (() => void) | undefined },
+    { name: "Archived files", icon: <Archive size={15} strokeWidth={1.5} />, onClick: () => setView("archived") },
   ];
 
   const limitReached = billing ? !billing.canCreateFile : false;
@@ -72,18 +72,15 @@ export default function SideNavBottom() {
     <div className="flex flex-col gap-4">
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
-          <Button
-            disabled={limitReached}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-900/20 transition-all rounded-lg h-10 gap-2 font-medium"
-          >
-            <Plus size={18} />
+          <Button disabled={limitReached} className="h-10 w-full gap-2">
+            <Plus size={16} />
             <span>New File</span>
           </Button>
         </DialogTrigger>
-        <DialogContent className="bg-[#121212] border border-zinc-800 text-white sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle className="text-xl">Create a new file</DialogTitle>
-            <DialogDescription className="text-zinc-400">
+            <DialogTitle>Create a new file</DialogTitle>
+            <DialogDescription>
               Give your new workspace file a name.
             </DialogDescription>
           </DialogHeader>
@@ -92,23 +89,24 @@ export default function SideNavBottom() {
               value={fileName}
               onChange={(e) => setFileName(e.target.value)}
               placeholder="e.g. System Architecture"
-              className="bg-zinc-900 border-zinc-700 focus-visible:ring-blue-500 text-white"
               onKeyDown={(e) => e.key === "Enter" && handleCreateFile()}
             />
           </div>
-          <Button onClick={handleCreateFile} className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+          <Button onClick={handleCreateFile} className="w-full">
             Create File
           </Button>
         </DialogContent>
       </Dialog>
 
-      <div className="space-y-1 mt-2">
+      <div className="mt-2 space-y-0.5">
         {menu.map((item, i) => (
           <div
             key={i}
             onClick={item.onClick}
-            className={`flex items-center gap-3 px-2 py-2 text-[13px] font-medium text-zinc-400 hover:text-zinc-200 transition-colors rounded-md ${
-              item.onClick ? "cursor-pointer hover:bg-zinc-800/50" : "cursor-default opacity-60"
+            className={`flex items-center gap-3 px-3 py-2 text-[13px] font-medium transition-colors duration-100 ${
+              item.onClick
+                ? "cursor-pointer text-muted-foreground hover:bg-muted hover:text-foreground"
+                : "cursor-default text-muted-foreground opacity-60"
             }`}
           >
             {item.icon}
@@ -117,32 +115,44 @@ export default function SideNavBottom() {
         ))}
       </div>
 
-      <div className="bg-zinc-900/50 border border-zinc-800/50 rounded-xl p-3.5 mt-2">
-        <div className="flex items-center justify-between mb-2.5 text-xs font-semibold">
-          <span className="text-zinc-300">{billing?.planName ?? "Free"} plan</span>
-          <span className="text-zinc-500">
+      <div className="mt-2 border-2 border-foreground p-3.5">
+        <div className="mb-2.5 flex items-center justify-between font-mono text-[10px] tracking-[0.15em] uppercase">
+          <span>{billing?.planName ?? "Free"} plan</span>
+          <span className="text-muted-foreground">
             {fileCount} / {fileLimit ?? "∞"}
           </span>
         </div>
-        <Progress value={percent} className="h-1.5 bg-zinc-800 [&>div]:bg-blue-500 mb-2" />
+        <Progress value={percent} className="mb-2 h-1.5 bg-border-light" />
         {limitReached ? (
-          <p className="text-[11px] text-red-400 font-medium leading-tight">
+          <p className="text-[11px] leading-tight font-semibold">
             File limit reached.{" "}
-            <button type="button" onClick={() => router.push("/pricing")} className="underline hover:text-red-300">
+            <button
+              type="button"
+              onClick={() => router.push("/pricing")}
+              className="underline decoration-2 underline-offset-2"
+            >
               Upgrade to Pro
             </button>
           </p>
         ) : billing?.plan === "pro" ? (
-          <p className="text-[11px] text-zinc-500 leading-tight">
+          <p className="text-[11px] leading-tight text-muted-foreground">
             Unlimited files on Pro.{" "}
-            <button type="button" onClick={() => router.push("/settings/billing")} className="underline hover:text-zinc-300">
+            <button
+              type="button"
+              onClick={() => router.push("/settings/billing")}
+              className="text-foreground underline underline-offset-2"
+            >
               Manage billing
             </button>
           </p>
         ) : (
-          <p className="text-[11px] text-zinc-500 leading-tight">
+          <p className="text-[11px] leading-tight text-muted-foreground">
             Free plan limits active.{" "}
-            <button type="button" onClick={() => router.push("/pricing")} className="underline hover:text-zinc-300">
+            <button
+              type="button"
+              onClick={() => router.push("/pricing")}
+              className="text-foreground underline underline-offset-2"
+            >
               Upgrade for unlimited files
             </button>
           </p>

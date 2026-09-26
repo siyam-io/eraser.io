@@ -1,13 +1,35 @@
 import type { Metadata } from "next";
-import { Outfit } from "next/font/google";
+import {
+  Playfair_Display,
+  Source_Serif_4,
+  JetBrains_Mono,
+} from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import TanStackProvider from "./providers/TanStackProvider";
 
-const outfit = Outfit({
-  variable: "--font-outfit",
+/* Serif as hero: display, body, and mono labels. */
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
   subsets: ["latin"],
-  weight: ["400", "500", "700", "900"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  style: ["normal", "italic"],
+  display: "swap",
+});
+
+const sourceSerif = Source_Serif_4({
+  variable: "--font-source-serif",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  display: "swap",
+});
+
+const jetbrains = JetBrains_Mono({
+  variable: "--font-jetbrains",
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -23,10 +45,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${outfit.variable} antialiased font-sans bg-[#F0F0F0] text-[#121212] selection:bg-[#F0C020] selection:text-[#121212]`}
-      >
+    <html
+      lang="en"
+      className={`${playfair.variable} ${sourceSerif.variable} ${jetbrains.variable}`}
+    >
+      <body className="antialiased bg-background text-foreground">
         <AuthProvider>
           <TanStackProvider>
 
