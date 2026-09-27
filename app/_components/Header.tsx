@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import GuestStartButton from "./GuestStartButton";
 
 const NAV_LINKS = [
   { name: "About", path: "/about" },
@@ -69,6 +70,12 @@ const Header = () => {
               >
                 Register
               </Link>
+              <GuestStartButton
+                label="Try Workspace"
+                loadingLabel="Opening…"
+                showArrow={false}
+                className="border-2 border-foreground bg-transparent px-5 py-2.5 font-mono text-[11px] font-medium tracking-widest uppercase transition-colors duration-100 hover:bg-foreground hover:text-background disabled:opacity-60"
+              />
             </div>
 
             <button
@@ -106,7 +113,10 @@ const Header = () => {
           >
             <ul className="mx-auto w-full max-w-6xl px-6 py-4">
               {NAV_LINKS.map((link) => (
-                <li key={link.name} className="border-b border-border-light last:border-b-0">
+                <li
+                  key={link.name}
+                  className="border-b border-border-light last:border-b-0"
+                >
                   <Link
                     className="block py-3 font-mono text-xs tracking-[0.15em] uppercase hover:underline decoration-2 underline-offset-4"
                     href={link.path}
@@ -116,19 +126,27 @@ const Header = () => {
                   </Link>
                 </li>
               ))}
-              <li className="flex gap-3 pt-4 sm:hidden">
-                <Link
-                  href="/login"
-                  className="flex-1 border-2 border-foreground px-5 py-3 text-center font-mono text-[11px] font-medium tracking-widest uppercase"
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/register"
-                  className="flex-1 border-2 border-foreground bg-foreground px-5 py-3 text-center font-mono text-[11px] font-medium tracking-widest text-background"
-                >
-                  Register
-                </Link>
+              <li className="flex flex-col gap-3 pt-4 sm:hidden">
+                <div className="flex gap-3">
+                  <Link
+                    href="/login"
+                    className="flex-1 border-2 border-foreground px-5 py-3 text-center font-mono text-[11px] font-medium tracking-widest uppercase"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="flex-1 border-2 border-foreground bg-foreground px-5 py-3 text-center font-mono text-[11px] font-medium tracking-widest text-background"
+                  >
+                    Register
+                  </Link>
+                </div>
+                <GuestStartButton
+                  label="Try Workspace"
+                  loadingLabel="Opening…"
+                  showArrow={false}
+                  className="w-full border-2 border-foreground bg-transparent px-5 py-3 text-center font-mono text-[11px] font-medium tracking-widest uppercase transition-colors duration-100 hover:bg-foreground hover:text-background disabled:opacity-60"
+                />
               </li>
             </ul>
           </nav>

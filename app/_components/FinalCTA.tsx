@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import GuestStartButton from "./GuestStartButton";
 
 /**
  * Final CTA — inverted plate with radial glow texture.
@@ -12,6 +13,7 @@ export default function FinalCTA({
   primary,
   secondary,
   note,
+  guestCta = false,
 }: {
   eyebrow: string;
   title: React.ReactNode;
@@ -19,6 +21,8 @@ export default function FinalCTA({
   primary: { label: string; href: string };
   secondary?: { label: string; href: string };
   note?: string;
+  /** Adds a no-signup "open a workspace now" action alongside the links. */
+  guestCta?: boolean;
 }) {
   return (
     <section className="border-t-4 border-foreground bg-foreground text-background texture-glow">
@@ -62,6 +66,7 @@ export default function FinalCTA({
               {secondary.label}
             </Link>
           )}
+          {guestCta && <GuestStartButton />}
         </div>
 
         {note && (

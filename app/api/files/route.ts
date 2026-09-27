@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
 import { File } from "@/models/File";
 import { requireTeamAccess, toErrorResponse } from "@/lib/access";
 import { assertCanCreateFile } from "@/lib/billing";
+import { ensureGuestTeam, guestExpiryDate, readGuestId } from "@/lib/guest";
+import { resolveIdentity } from "@/lib/identity";
 
 const MAX_FILE_NAME_LENGTH = 200;
 
@@ -13,8 +14,8 @@ const isView = (value: string | null): value is View =>
 
 export async function GET(req: Request) {
   try {
-    const user = await getCurrentUser();
-    if (!user?.email) {
+    const identity = await resolveIdentity();
+    if (!identity) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -28,7 +29,7 @@ export async function GET(req: Request) {
     }
 
     // Throws 404 if the signed-in user does not own the team.
-    await requireTeamAccess(user.email, teamId);
+    await requireTeamAccess(identity.value, teamId);
 
     const query: Record<string, unknown> = {
       teamId,
@@ -51,15 +52,15 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
-    const user = await getCurrentUser();
-    if (!user?.email) {
+    const identity = await resolveIdentity();
+    if (!identity) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const body = await req.json().catch(() => null);
 
     const fileName = typeof body?.fileName === "string" ? body.fileName.trim() : "";
-    const teamId = typeof body?.teamId === "string" ? body.teamId : "";
+    let teamId = typeof body?.teamId === "string" ? body.teamId : "";
 
     if (!fileName) {
       return NextResponse.json({ error: "fileName is required" }, { status: 400 });
@@ -71,21 +72,35 @@ export async function POST(req: Request) {
       );
     }
 
-    await requireTeamAccess(user.email, teamId);
+    if (!teamId) {
+      if (!identity.isGuest) {
+        return NextResponse.json({ error: "teamId is required" }, { status: 400 });
+      }
+      // A guest owns exactly one throwaway team, provisioned on first use.
+      const guestId = await readGuestId();
+      if (!guestId) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
+      teamId = (await ensureGuestTeam(guestId))._id.toString();
+    }
+
+    await requireTeamAccess(identity.value, teamId);
 
     // Server-side plan enforcement (returns 402 when the limit is hit).
-    await assertCanCreateFile(user.email);
+    await assertCanCreateFile(identity.value);
 
     const newFile = await File.create({
       fileName,
       teamId,
-      // Identity always comes from the session, never the request body.
-      createdBy: user.email,
+      // Identity always comes from the session/cookie, never the request body.
+      createdBy: identity.value,
       document: typeof body?.document === "string" ? body.document : "",
       whiteboard: typeof body?.whiteboard === "string" ? body.whiteboard : "",
       archive: false,
       starred: false,
+      publicAccess: "edit",
       editedAt: new Date(),
+      ...(identity.isGuest ? { expiresAt: guestExpiryDate() } : {}),
     });
 
     return NextResponse.json(newFile, { status: 201 });

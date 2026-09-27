@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import GuestStartButton from "./GuestStartButton";
 
 /**
  * Hero — editorial masthead.
@@ -14,7 +15,10 @@ const Hero = () => {
         {/* Visual punctuation: rule + bordered square + label */}
         <div className="flex items-center gap-4 pt-16 md:pt-24">
           <span className="h-1 w-16 bg-foreground" aria-hidden="true" />
-          <span className="size-3 border-2 border-foreground" aria-hidden="true" />
+          <span
+            className="size-3 border-2 border-foreground"
+            aria-hidden="true"
+          />
           <span className="font-mono text-[11px] tracking-[0.2em] text-muted-foreground uppercase">
             Docs &amp; Whiteboards — one workspace
           </span>
@@ -23,7 +27,8 @@ const Hero = () => {
         <h1 className="mt-10 font-display text-6xl leading-[0.82] font-black tracking-tighter sm:text-7xl md:text-8xl lg:text-9xl">
           Draw
           <br />
-          <span className="font-normal italic tracking-tight">&amp;</span> Document
+          <span className="font-normal italic tracking-tight">&amp;</span>{" "}
+          Document
         </h1>
 
         {/* Heavy rule terminating in a bordered square */}
@@ -56,6 +61,12 @@ const Hero = () => {
                 →
               </span>
             </Link>
+            <GuestStartButton
+              label="Try Without Sign-up"
+              loadingLabel="Opening…"
+              showArrow={false}
+              className="inline-flex items-center gap-3 border-2 border-foreground px-8 py-4 font-mono text-xs font-medium tracking-widest uppercase transition-colors duration-100 hover:bg-foreground hover:text-background disabled:opacity-60"
+            />
             <Link
               href="/about"
               className="inline-flex items-center gap-3 border-2 border-foreground px-8 py-4 font-mono text-xs font-medium tracking-widest uppercase transition-colors duration-100 hover:bg-foreground hover:text-background"

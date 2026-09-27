@@ -34,11 +34,15 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-// Protect authenticated app routes + the admin panel
+// Protect authenticated app routes + the admin panel.
+//
+// `/workspace/:path*` is deliberately NOT matched: a workspace is reachable by
+// anonymous guests as well as signed-in users, so a blanket redirect to /login
+// would break every shared and guest link. Authorization for a workspace lives
+// in the API instead (`requireFileAccess`), where it can be per-file.
 export const config = {
   matcher: [
     "/dashboard/:path*",
-    "/workspace/:path*",
     "/teams/:path*",
     "/settings/:path*",
     "/admin/:path*",

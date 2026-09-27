@@ -1,24 +1,23 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
 import { File } from "@/models/File";
-import { requireFileAccess, toErrorResponse } from "@/lib/access";
+import { requireFileLevel, toErrorResponse } from "@/lib/access";
+import { resolveIdentity } from "@/lib/identity";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
 /** Marks the file as recently opened. Called when the workspace loads it. */
 export async function POST(_req: Request, { params }: RouteContext) {
   try {
-    const user = await getCurrentUser();
-    if (!user?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
+    const identity = await resolveIdentity();
     const { id } = await params;
-    await requireFileAccess(user.email, id);
+
+    // Anyone who can open the file (including via a shared link) counts as an
+    // open; "Recent" in the dashboard is meant to reflect file activity.
+    await requireFileLevel(identity?.value ?? null, id, "view");
 
     await File.findByIdAndUpdate(id, { lastOpenedAt: new Date() });
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, isGuest: identity?.isGuest ?? false });
   } catch (error) {
     return toErrorResponse(error);
   }

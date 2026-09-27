@@ -286,6 +286,7 @@ export default function Home() {
           description="Documents and whiteboards, held together by type and rules. Your first five files are free."
           primary={{ label: "Start creating", href: "/register" }}
           secondary={{ label: "See pricing", href: "/pricing" }}
+          guestCta
           note="Free forever for up to 5 files · No card required"
         />
       </main>

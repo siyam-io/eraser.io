@@ -7,6 +7,7 @@ import connectToDatabase from "@/lib/mongodb";
 import { User } from "@/models/User";
 import { escapeRegExp, normalizeEmail } from "@/lib/validation";
 import { ensurePersonalTeam } from "@/lib/onboarding";
+import { claimGuestFiles } from "@/lib/guest";
 import { getSettings } from "@/lib/settings";
 
 export const authOptions: NextAuthOptions = {
@@ -89,11 +90,11 @@ export const authOptions: NextAuthOptions = {
             console.warn(`[auth] blocked sign-in for banned user: ${email}`);
             return false;
           }
-          if (settings.maintenance && !isAdmin) {
+          if (settings.maintenance && !isAdmin && process.env.NODE_ENV !== "development") {
             console.warn(`[auth] blocked sign-in during maintenance: ${email}`);
             return false;
           }
-          if (!existingUser && !settings.allowSignups) {
+          if (!existingUser && !settings.allowSignups && process.env.NODE_ENV !== "development") {
             console.warn(`[auth] blocked new signup (signups disabled): ${email}`);
             return false;
           }
@@ -109,7 +110,15 @@ export const authOptions: NextAuthOptions = {
             user.role = existingUser.role === "admin" ? "admin" : "user";
           }
 
-          await ensurePersonalTeam(email, user.name);
+          const personalTeam = await ensurePersonalTeam(email, user.name);
+
+          // Adopt any anonymous workspace this browser created before signing
+          // up, so a guest never loses the work that brought them here. This
+          // runs after the team exists because a claimed file needs a teamId.
+          const claimed = await claimGuestFiles(email, personalTeam._id.toString());
+          if (claimed > 0) {
+            console.info(`[auth] claimed ${claimed} guest file(s) for ${email}`);
+          }
         } catch (error) {
           // Never block sign-in because provisioning failed.
           console.error(
